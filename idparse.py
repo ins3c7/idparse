@@ -7,14 +7,17 @@
 # Log Parser
 
 import os, re
-dic = []
+dic=[];dicbr=[]
 for lg in os.listdir('.'):
 	with open(lg, 'r') as f:
 		lines = f.readlines()
 	for line in lines:
+		br = False
 		try:
 			line = line.split('\t')[1]
 			if line.lower().find('approved')!=-1:
+				if line.lower().find('brazil')!=-1 or line.lower().find('brasil')!=-1:
+					br = True
 				num = re.findall('\d+', line)
 				for n in num:
 					if len(n) == 16:
@@ -23,10 +26,15 @@ for lg in os.listdir('.'):
 						else:
 							result = num[num.index(n)], num[num.index(n)+1], num[num.index(n)+2]
 						if result not in dic:
-							dic.append(result)
+							if br:
+								dicbr.append(result)
+							else:
+								dic.append(result)
 		except Exception, e:
-			pass
 			# print str(e)
+			pass
 
 for result in dic:
-	print '[APPROVED]',' '.join(result)
+	print '[AP]',' '.join(result)
+for result in dicbr:
+	print '[AP]',' '.join(result), '[BR]'
